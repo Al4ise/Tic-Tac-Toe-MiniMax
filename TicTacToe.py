@@ -1,7 +1,3 @@
-def main():
-    game = TicTacToe(5)
-    print(game.playGame())
-
 class TicTacToe:
     def __init__(self, n=3, m=3):
         # Create the board (A nxn matrix, default is 3x3)
@@ -18,22 +14,25 @@ class TicTacToe:
                 print(col, '|', end='')
             print()
     
-    def placeValue(self):
+    def placeValue(self, row=-1, col=-1):
         # Place a value on the board
         status=True
         while status:
             self.printBoard()
-            row = int(input('Enter Row: '))-1
-            col = int(input('Enter Column: '))-1
+            if row == -1: row = int(input('Enter Row: '))-1
+            if col == -1: col = col = int(input('Enter Column: '))-1
             if self.validMove(row, col):
                 self.board[row][col] = self._player
-                self.checkWin()
                 status=False
             else:
                 print('Invalid Move')
-        
-        self.updateTurn()
     
+    def returnBoard (self):
+        return self.board
+    
+    def returnPlayer (self):
+        return self._player
+
     def validMove(self, row, col):
         if row > self._n or row < 0 or col > self._n or col < 0:
             return False
@@ -108,9 +107,12 @@ class TicTacToe:
     def playGame(self):
         while True:
             self.placeValue()
+            self.checkWin()
+            self.updateTurn()
+            
             if self.checkWin() != None:
                 self.printBoard()
                 return self.checkWin()
-
-if __name__ == '__main__':
-    main()
+            
+#if __name__ == '__main__':
+#    main()
