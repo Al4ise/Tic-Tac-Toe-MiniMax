@@ -1,8 +1,8 @@
+import os
 class TicTacToe:
     def __init__(self, n=3, m=3):
         # Create the board (A nxn matrix, default is 3x3)
         self.board = [[' ' for _ in range(n)] for _ in range(n)]
-        self._n=n
         self._m=m
         self._player = 'X'
     
@@ -14,19 +14,27 @@ class TicTacToe:
                 print(col, '|', end='')
             print()
     
-    def placeValue(self, row=-1, col=-1):
+    def placeValue(self):
         # Place a value on the board
-        status=True
-        while status:
-            self.printBoard()
-            if row == -1: row = int(input('Enter Row: '))-1
-            if col == -1: col = col = int(input('Enter Column: '))-1
+        while True:
+            row = int(input('Enter Row: '))
+            col = int(input('Enter Column: '))
             if self.validMove(row, col):
                 self.board[row][col] = self._player
-                status=False
+                break
             else:
                 print('Invalid Move')
-    
+            
+    def botPlaceValue(self, row=-1, col=-1):
+        # Place a value on the board
+        while True:
+            if self.validMove(row, col):
+                self.board[row][col] = self._player
+                break
+            else:
+                print('Invalid Move')
+                break
+            
     def returnBoard (self):
         return self.board
     
@@ -34,12 +42,11 @@ class TicTacToe:
         return self._player
 
     def validMove(self, row, col):
-        if row > self._n or row < 0 or col > self._n or col < 0:
-            return False
-        elif self.board[row][col] != ' ':
-            return False
-        else:
-            return True
+        if (0 <= row < len(self.board)) and (0 <= col < len(self.board)):
+            if self.board[row][col] == ' ':
+                return True
+        
+        return False
     
     def updateTurn(self):
         if self._player == 'X':
@@ -47,30 +54,32 @@ class TicTacToe:
         else:
             self._player = 'X'
 
-    def checkWin(self):
-        status=1
+    def checkWin(self, board=None):
+        if board == None:
+            board = self.board
+        
         # Check Rows
-        for row in self.board:
+        for row in board:
             # check if all values in row are equal
             if all(element == row[0] for element in row) and row[0] != ' ':
                 return row[0]
 
         # Check Columns
-        for col in range(self._n):
-            tempvalue = self.board[0][col]
+        for col in range(len(board)):
+            tempvalue = board[0][col]
             if tempvalue == ' ': break
-            for row in range(self._n):
-                if self.board[row][col] != tempvalue:
+            for row in range(len(board)):
+                if board[row][col] != tempvalue:
                     # Column does not have equal values
                     break
             else:
                 return tempvalue
         
         # Check diagonals
-        tempvalue = self.board[0][0]
+        tempvalue = board[0][0]
         if tempvalue != ' ':
-            for i in range(self._n):
-                if self.board[i][i] != tempvalue:
+            for i in range(len(board)):
+                if board[i][i] != tempvalue:
                     # Diagonal does not have equal values
                     break
             else:
@@ -78,10 +87,10 @@ class TicTacToe:
                 return tempvalue
 
         # Check anti-diagonals
-        tempvalue = self.board[0][self._n-1]
+        tempvalue = board[0][len(board)-1]
         if tempvalue != ' ':
-            for i in range(self._n):
-                if self.board[i][self._n-i-1] != tempvalue:
+            for i in range(len(board)):
+                if board[i][len(board)-i-1] != tempvalue:
                     # Anti-diagonal does not have equal values
                     break
             else:
@@ -90,29 +99,23 @@ class TicTacToe:
         
         # Check if board is full
         blank_exists = False
-        for row in self.board:
+        for row in board:
             for col in row:
                 if col == ' ':
                     blank_exists = True
                     break
         
-        if not blank_exists:
-            status = 2 
-             
-        if status == 1:
-            return None 
+        if blank_exists: # Game is still on
+             return None
+        else: # Game is a draw
+            return 'D'
+
+    def announceWinner (self):
+        winner = self.checkWin()
+        if winner == 'D':
+            print('Game is a Draw')
         else:
-            return 'D'  
-    
-    def playGame(self):
-        while True:
-            self.placeValue()
-            self.checkWin()
-            self.updateTurn()
-            
-            if self.checkWin() != None:
-                self.printBoard()
-                return self.checkWin()
+            print(f'{winner} has won the game')
             
 #if __name__ == '__main__':
 #    main()

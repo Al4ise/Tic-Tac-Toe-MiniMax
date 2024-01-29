@@ -7,17 +7,17 @@ def main():
         if game.returnPlayer() == 'X':
             # bot plays
             move = Bot.bestMove(game.returnBoard())
-            game.placeValue(move[0]+1, move[1]+1)
+            game.botPlaceValue(move[0], move[1])
         else:
+            # player plays
+            game.printBoard()
             game.placeValue()
-        
-        game.checkWin()
-        game.updateTurn()
     
         if game.checkWin() != None:
             game.printBoard()
-            return game.checkWin()
-
+            game.announceWinner()
+        else:
+            game.updateTurn()
 
 if __name__ == '__main__':
     main()
