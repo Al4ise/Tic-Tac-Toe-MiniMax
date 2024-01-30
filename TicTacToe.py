@@ -13,28 +13,23 @@ class TicTacToe:
             for col in row:
                 print(col, '|', end='')
             print()
-    
-    def placeValue(self):
+
+    def placeValue(self, row=-1, col=-1):
         # Place a value on the board
         while True:
-            row = int(input('Enter Row: '))
-            col = int(input('Enter Column: '))
+
+            if row == -1: 
+                row = int(input('Enter Row: '))
+            
+            if col == -1:
+                col = int(input('Enter Column: '))
+            
             if self.validMove(row, col):
                 self.board[row][col] = self._player
                 break
             else:
                 print('Invalid Move')
-            
-    def botPlaceValue(self, row=-1, col=-1):
-        # Place a value on the board
-        while True:
-            if self.validMove(row, col):
-                self.board[row][col] = self._player
-                break
-            else:
-                print('Invalid Move')
-                break
-            
+
     def returnBoard (self):
         return self.board
     
@@ -54,10 +49,11 @@ class TicTacToe:
         else:
             self._player = 'X'
 
-    def checkWin(self, board=None):
-        if board == None:
-            board = self.board
-        
+    def checkWin(self):
+        return self._checkWin(self.board)
+    
+    @classmethod
+    def _checkWin(cls, board):
         # Check Rows
         for row in board:
             # check if all values in row are equal
